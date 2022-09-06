@@ -125,14 +125,8 @@ decoded) => {
    });
 });
 
-// function hash(password){
-	
-// }
 
 
-exports.signin = (req, res) => {
-     let { email, password } = req.body;
-     
-}
+
 
 module.exports = router
