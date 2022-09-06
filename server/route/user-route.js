@@ -16,7 +16,7 @@ router.post('/register',(req,res)=>{
 		.then((user) => {
 			res.json({message:"user made"});
 		}).catch(err=>{
-			res.json({message:"user not made"+err}).send()
+			res.status(400).json({message:"user not made"+err}).send()
 		})
 });
 
