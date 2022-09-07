@@ -1,17 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db/dbconnect')
+// const db = require('../db/dbconnect')
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const {
 	createJWT,
      } = require('../utils/jwt')
-     const jwt = require('jsonwebtoken');
-// router.get('/test',(req,res)=>{
-// 	res.status(200).json({message:"working"})
+     require("dotenv").config();
+const jwt = require('jsonwebtoken');
+
+router.get('/test',(req,res)=>{
+	res.status(200).json({message:"working"})
 	
-// 	console.log()
-// })
+	console.log()
+})
 const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 router.post('/register',(req,res)=>{
 	let { name,dob, email, password, } = req.body;
@@ -103,11 +105,13 @@ let errors = [];
           user._id,
           3600
        );
+//        console.log(access_token)
        jwt.verify(access_token, process.env.TOKEN_SECRET, (err,
 decoded) => {
          if (err) {
             res.status(500).json({ erros: err });
          }
+	//  console.log(decoded)
          if (decoded) {
              return res.status(200).json({
                 success: true,
@@ -127,17 +131,34 @@ decoded) => {
 
 
 router.put('/userupdate',(req,res)=>{
-	let { name,dob, email,id } = req.body;
+	
+	let { name,dob,password,id } = req.body;
+	const access_token = req.body.token || req.query.token || req.headers["x-access-token"];
+	 const t = parseJwt(access_token)
+	 
+	
+
+	console.log(t.userId)
+	
+	
 	 let errors = [];
-	 if (!name) {
+
+	 if(access_token==" "){
+		errors.push({ token : "invalid token :" });
+	 }
+	 console.log(t.userId)
+	//  	if(!iserrors){
+	// 	errors.push({ token : "error:"+uid });
+	// }
+	      if (!name) {
 		errors.push({ name: "required" });
+	      }if (!password) {
+		errors.push({ password: "required" });
 	      }
-	      if (!email) {
-		errors.push({ email: "required" });
-	      }
-	      if (!emailRegexp.test(email)) {
-		errors.push({ email: "invalid" });
-	      }
+	      
+	//       if (!emailRegexp.test(email)) {
+	// 	errors.push({ email: "invalid" });
+	//       }
 	     
 	      if (!dob) {
 		errors.push({ dob: "required" });
@@ -145,72 +166,57 @@ router.put('/userupdate',(req,res)=>{
 	      
 	    
 	      if (errors.length > 0) {
-		return res.status(422).json({ errors: errors });
+		return res.status(422).json({ errors3: errors });
 	      }
-	      User.findOne({email: email})
-	.then(user=>{
-	   if(user){
-	      return res.status(422).json({ errors: [{ user: "email already exists" }] });
-	   }else {
+	     
 	// //      const user = new User({
 	       
-	       User.updateOne({_id:id},{
+	       User.findOneAndUpdate({_id:t.userId},{
 		name: name,
 		dob:dob,
-		email: email,
-	       }).then(responce=>{
-		res.status(200).json({
-			success: true,
-			result: response
-		})
-	       }).catch(err => {
-		res.status(500).json({
-		   errors: [{ error: err }]
-		});
+		// email: email,
+		password:password
+	       },{new :false}).then(responce=>{
+		res.status(200).json({ errors9: [{success: true, error: responce }]});
+	       }).catch(err => { 
+		res.status(500).json({  result: err} )
+		
 
     
 	  });
-	 }
-      }).catch(err =>{
-	  res.status(500).json({
-	    errors: [{ error: 'Something went wrong' }]
-	  });
-      })
+	 
+	  
+	
+
 });
 
+router.delete("/userdelete",(req,res) =>{
+	let { email} = req.body;
+	var datas = null
+	const access_token = req.body.token || req.query.token || req.headers["x-access-token"];
+	const t = parseJwt(access_token)
+	const userk = User.findOne({email:email}).then(resp=>{
+		resp._id == t.userId?console.log("asuth"):res.status(405).json({error:"user no auth"})
+	})
+	
+	 console.log(t.userId,datas)
+	
+		User.deleteOne({_id:t.userId}).then(responce=>{
+			res.send(205).json({message:"user deleted"})
+		}).catch(err=>{
+			res.status(500).json({errors:err})
+		})
+	
+
+	});
+
+function verfytoken_returnid(access_token){ 
+	const k = jwt.verify(access_token,process.env.TOKEN_SECRET)
+		return k	
+}
 
 
-router.put('/tok',(req,res) =>{
-	const token =
-	req.body.token || req.query.token || req.headers["x-access-token"];
-	// console.log(token)
-	const t = parseJwt(token)
-	// console.log(t)
-      if (!token) {
-	return res.status(403).send("A token is required for authentication");
-      }
-      try {
-	// const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-	// req.user = decoded;
-	// console.log(typeof(decoded))
-	jwt.verify(access_token, process.env.TOKEN_SECRET, (err,
-		decoded) => {
-			 if (err) {
-			//     res.status(500).json({ erros: err });
-			console.log(200,":", err)
-			 }
-			 if (decoded) {
-			     return res.status(200).json({
-				success: true,
-				token: access_token,
-				message: user._id,
-			     });
-			   }
-			 });
-      } catch (err) {
-	return res.status(401).send("Invalid Token");
-      }
-})
+
 function parseJwt (token) {
 	return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
     }
