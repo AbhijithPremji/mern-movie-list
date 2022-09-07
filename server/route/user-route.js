@@ -15,7 +15,7 @@ router.get('/test',(req,res)=>{
 	console.log()
 })
 const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-router.post('/register',(req,res)=>{
+router.post('/register',async (req,res)=>{
 	let { name,dob, email, password, } = req.body;
 	 let errors = [];
   if (!name) {
@@ -190,24 +190,29 @@ router.put('/userupdate',(req,res)=>{
 
 });
 
-router.delete("/userdelete",(req,res) =>{
+router.delete("/userdelete",async(req,res) =>{
+	try{
 	let { email} = req.body;
 	var datas = null
 	const access_token = req.body.token || req.query.token || req.headers["x-access-token"];
 	const t = parseJwt(access_token)
-	const userk = User.findOne({email:email}).then(resp=>{
-		resp._id == t.userId?console.log("asuth"):res.status(405).json({error:"user no auth"})
-	})
+	const userk = await User.findOne({email:req.body.email}).then(resq=>{return resq})
+	// .then(resp=>{
+	// 	resp._id == t.userId?console.log("asuth"):res.status(405).json({error:"user no auth"})
+	// })
 	
-	 console.log(t.userId,datas)
+	 console.log(t.userId,userk._id)
 	
-		User.deleteOne({_id:t.userId}).then(responce=>{
-			res.send(205).json({message:"user deleted"})
-		}).catch(err=>{
-			res.status(500).json({errors:err})
-		})
-	
-
+		// User.deleteOne({_id:t.userId}).then(responce=>{
+		// 	res.send(205).json({message:"user deleted"})
+		// }).catch(err=>{
+		// 	res.status(500).json({errors:err})
+		// })
+	res.send("hi")
+	}
+	catch (error) {
+		console.log(error)
+	      }
 	});
 
 function verfytoken_returnid(access_token){ 
