@@ -195,23 +195,30 @@ router.delete("/userdelete",async(req,res) =>{
 	let { email} = req.body;
 	var datas = null
 	const access_token = req.body.token || req.query.token || req.headers["x-access-token"];
-	const t = parseJwt(access_token)
-	const userk = await User.findOne({email:req.body.email}).then(resq=>{return resq})
+	const t =  parseJwt(access_token)
+	const userk = await User.findOne({email:email})
 	// .then(resp=>{
 	// 	resp._id == t.userId?console.log("asuth"):res.status(405).json({error:"user no auth"})
 	// })
+	var uids =JSON.stringify(userk._id)
+	var test = parseInt(uids)
+	 console.log(t.userId,test)
+	 if('"'+t.userId+'"'==uids){
+User.deleteOne({_id:t.userId}).then(responce=>{
+			res.send(205).json({message:"user deleted"})
+		}).catch(err=>{
+			res.status(500).json({errors:err})
+		})
+	 }
+	 else
+	 {
+		res.status(500).json({errors:"user unauthorized"})
+	 }
 	
-	 console.log(t.userId,userk._id)
-	
-		// User.deleteOne({_id:t.userId}).then(responce=>{
-		// 	res.send(205).json({message:"user deleted"})
-		// }).catch(err=>{
-		// 	res.status(500).json({errors:err})
-		// })
-	res.send("hi")
+
 	}
 	catch (error) {
-		console.log(error)
+		res.status(500).json({errors:error})
 	      }
 	});
 
