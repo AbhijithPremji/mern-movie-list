@@ -4,7 +4,7 @@ import ListMovie from './componenets/ListMovie';
 import axios from "axios"
 import Button from '@mui/material/Button';
 import env from "react-dotenv";
-
+import SearchIcon from '@mui/icons-material/Search';
  
 
 
@@ -54,7 +54,7 @@ return(
     <form onSubmit={handleSubmit}>
       <input type="search" placeholder='search ...' className='search' onChange={inpChange}></input>
       <div className='button-search'>
-        <Button className='button-searc' variant="contained" onClick={handleSubmit}>-></Button>
+        <Button className='button-searc' variant="contained" onClick={handleSubmit}> <SearchIcon/> </Button>
       </div>
       
     </form>
