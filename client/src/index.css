@@ -1,13 +1,79 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.caption{
+    display: flex;
+    align-items: center;
+    font-size: 8rem;
+    font-family: monospace;
+    font-weight: bold;
+    color: chocolate;
+}
+.search{
+    width: 16.7em;
+    height: 3rem;
+    padding-left: 0.5rem;
+    margin-left: 50em;
+    margin-bottom: 1rem;
+    
+}
+.App{
+ 
+    background-color: #111;
+    margin: 0;
+    padding: 5px;
+    border: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.card{
+   display: inline-flex;
+   text-align: center;
+   background-color:wheat;
+   height: 49em;
+     
+   
+}
+.over-view{
+    height: 12em;
+ max-height: 12em;  
+  
+  
+   
+    
+}
+.rating{
+    height: 12rem;
+    max-height: 12rem;
+    position:absolute;
+   
+    
+   
+    
+}
+.movie-img{
+    height: 29rem;
+    padding: 5px;
+    padding-top: 5px;
+    
+}
+
+.login{
+    width: 10rem;
+    left: 1700px;
+    padding-left: 10rem;
+    border-top: 1rem;
+    color: black;
+    border-right: 5rem;
+    margin-right: 5rem;
+    bottom: 150px;
+    position: fixed;
+}
+.button-search{
+    width: 5rem;
+    height: 1rem;
+    padding-left: 67rem;
+    margin-top: -4rem;
+    
+    
+}
+.button-searc{
+    width: 5rem;
+    height: 3.5em;
 }
