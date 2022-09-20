@@ -205,7 +205,7 @@ router.delete("/userdelete",async(req,res) =>{
 	 console.log(t.userId,test)
 	 if('"'+t.userId+'"'==uids){
 User.deleteOne({_id:t.userId}).then(responce=>{
-			res.send(205).json({message:"user deleted"})
+			res.status(205).json({message:"user deleted"})
 		}).catch(err=>{
 			res.status(500).json({errors:err})
 		})
